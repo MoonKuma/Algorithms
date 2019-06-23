@@ -19,7 +19,7 @@ public class Deque<Item> implements Iterable<Item> {
         this.last = null;
     }
 
-    class Node {
+    private class Node {
         private Item item;
         private Node befroe;
         private Node next;
@@ -43,6 +43,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     public void addFirst(Item item) {
         // add the item to the front
+        if (item==null) { throw new IllegalArgumentException("Intering null object is not permitted!");}
         Node newNode = new Node(item, null, this.first);
         if (this.first != null) {
             this.first.befroe = newNode;
@@ -56,6 +57,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     public void addLast(Item item) {
         // add the item to the end
+        if (item==null) { throw new IllegalArgumentException("Intering null object is not permitted!");}
         Node newNode = new Node(item, this.last, null);
         if (this.last != null) {
             this.last.next = newNode;

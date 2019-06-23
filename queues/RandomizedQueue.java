@@ -33,6 +33,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public void enqueue(Item item) {
         // add the item
+        if (item==null) { throw new IllegalArgumentException("Intering null object is not permitted!");}
         if (this.size == items.length) {
             resize(2*items.length);
         }
@@ -41,6 +42,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public Item dequeue() {
         // remove and return a random item
+        if (isEmpty()) throw new NoSuchElementException();
         int target = StdRandom.uniform(this.size);
         swap(target, this.size - 1);
         Item item = items[--this.size];
@@ -53,6 +55,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     public Item sample() {
         // return a random item (but do not remove it)
+        if (isEmpty()) throw new NoSuchElementException();
         int target = StdRandom.uniform(this.size);
         return items[target];
     }
@@ -60,7 +63,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     @Override
     public Iterator<Item> iterator() {
         return new Iterator<Item>() {
+
             private int n = size;
+            private int[] orders; // this is to prevent the paralled calling
 
             @Override
             public boolean hasNext() {
@@ -70,9 +75,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             @Override
             public Item next() {
                 if (!hasNext()) { throw new NoSuchElementException("No element inside itertor!"); }
+                if (orders == null) {
+                    orders = new int[n];
+                    for (int i=0; i<n; i++) {
+                        orders[i] = i;
+                    }
+                    StdRandom.shuffle(orders);
+                }
                 int target = StdRandom.uniform(n);
-                swap(target, --n);
-                return items[n];
+                return items[orders[--n]];
             }
         };
     }
@@ -100,10 +111,23 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         for (String i:test) {
             randomizedQueue.enqueue(i);
         }
+        System.out.println("Testing iterator independent");
         for (int i = 0; i < 3; i++) {
             System.out.println("Testing iterator #"+i);
-            for (String string:randomizedQueue) {
-                System.out.print(string);
+            Iterator<String> testIterator = randomizedQueue.iterator();
+            while (testIterator.hasNext()) {
+                System.out.print(testIterator.next());
+            }
+            System.out.println();
+        }
+        System.out.println("Testing iterator paralled");
+        for (int i = 0; i < 2; i++) {
+            System.out.println("Testing iterator #"+i);
+            Iterator<String> testIterator = randomizedQueue.iterator();
+            Iterator<String> testIterator2 = randomizedQueue.iterator();
+            while (testIterator.hasNext() && testIterator2.hasNext()) {
+                System.out.print(testIterator.next());
+                System.out.println("---"+ testIterator2.next());
             }
             System.out.println();
         }
