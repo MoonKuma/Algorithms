@@ -1,0 +1,12 @@
+# Ignore the following
+# data
+*.zip
+*.txt
+*.png
+*.pdf
+# ide setting
+.idea/
+*.iml
+# libs&classes
+*.lib
+*.class
