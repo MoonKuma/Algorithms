@@ -6,6 +6,7 @@
 *.pdf
 # ide setting
 .idea/
+*.lift/
 *.iml
 # libs&classes
 *.lib
