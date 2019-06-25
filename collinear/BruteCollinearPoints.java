@@ -15,20 +15,27 @@ public class BruteCollinearPoints {
     private LineSegment[] lineSegments;
     private int numberOfSegments = 0;
 
-    public BruteCollinearPoints(Point[] points) {
+    public BruteCollinearPoints(Point[] points1) {
         // finds all line segments containing 4 points
         // don't waste time micro-optimizing the brute-force solution, won't help a lot! XD
+        if (points1 == null) throw new IllegalArgumentException();
+        Point[] points = new Point[points1.length];
+        for (int i = 0; i < points1.length; i++) {
+            if (points1[i] == null) throw new IllegalArgumentException();
+            points[i] = points1[i];
+        }
         lineSegments = new LineSegment[points.length];
         Arrays.sort(points);
         int totalLength = points.length;
         int index = 0;
         for (int i0 = 0; i0 < totalLength; i0++) {
+            Point p = points[i0];
             for (int i1 = i0+1; i1 < totalLength; i1++) {
+                Point q = points[i1];
+                if (p.compareTo(q) == 0) throw new IllegalArgumentException();
                 for (int i2 = i1+1; i2 < totalLength; i2++) {
+                    Point r = points[i2];
                     for (int i3 = i2+1; i3 < totalLength; i3++) {
-                        Point p = points[i0];
-                        Point q = points[i1];
-                        Point r = points[i2];
                         Point s = points[i3];
                         if (p.slopeTo(q) == p.slopeTo(r) && p.slopeTo(r) == p.slopeTo(s)) {
                             lineSegments[index++] = new LineSegment(p, s);
@@ -51,7 +58,11 @@ public class BruteCollinearPoints {
     }
     public LineSegment[] segments() {
         // the line segments
-        return lineSegments;
+        LineSegment[] result = new LineSegment[lineSegments.length];
+        for (int i = 0; i < lineSegments.length; i++) {
+            result[i] = lineSegments[i];
+        }
+        return result;
     }
 
     public static void main(String[] args) {

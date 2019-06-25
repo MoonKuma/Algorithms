@@ -15,10 +15,16 @@ public class FastCollinearPoints {
     private LineSegment[] lineSegments;
     private int numberOfSegments = 0;
 
-    public FastCollinearPoints(Point[] points) {
+    public FastCollinearPoints(Point[] points1) {
         // finds all line segments containing 4 points
-        LineSegment[] tmpLineSegments = new LineSegment[points.length];
-        int segIndex = 0;
+        if (points1 == null) throw new IllegalArgumentException();
+        Point[] points = new Point[points1.length];
+        for (int i = 0; i < points1.length; i++) {
+            if (points1[i] == null) throw new IllegalArgumentException();
+            points[i] = points1[i];
+        }
+        LineSegment[] tmpLineSegments = new LineSegment[4];
+        // int segIndex = 0;
         int totalLength = points.length;
         for (int index = 0; index < totalLength; index++) {
             Arrays.sort(points);
@@ -41,8 +47,11 @@ public class FastCollinearPoints {
                         Arrays.sort(points, i0, j0);
                         if (orign.compareTo(points[i0]) < 0) {
                             // real target (when orign is the minimum)
-                            tmpLineSegments[segIndex++] = new LineSegment(orign, points[j0-1]);
+                            tmpLineSegments[numberOfSegments] = new LineSegment(orign, points[j0-1]);
                             numberOfSegments++;
+                            if (numberOfSegments == tmpLineSegments.length) {
+                                tmpLineSegments = resize(tmpLineSegments,2*tmpLineSegments.length);
+                            }
                         }
                         break;
                     } else {
@@ -64,7 +73,19 @@ public class FastCollinearPoints {
     }
     public LineSegment[] segments() {
         // the line segments
-        return lineSegments;
+        // for imutable purpose, here we create and return a new array
+        LineSegment[] result = new LineSegment[lineSegments.length];
+        for (int i = 0; i < lineSegments.length; i++) {
+            result[i] = lineSegments[i];
+        }
+        return result;
+    }
+    private LineSegment[] resize(LineSegment[] lineSegments1, int newLength) {
+        LineSegment[] newLineSegments = new LineSegment[newLength];
+        for (int i = 0; i < lineSegments1.length; i++) {
+            newLineSegments[i] = lineSegments1[i];
+        }
+        return newLineSegments;
     }
 
     public static void main(String[] args) {
@@ -88,11 +109,14 @@ public class FastCollinearPoints {
         StdDraw.show();
 
         // print and draw the line segments
+        StdOut.println(points.length);
         FastCollinearPoints collinear = new FastCollinearPoints(points);
         for (LineSegment segment : collinear.segments()) {
             StdOut.println(segment);
             segment.draw();
         }
+        StdOut.println(collinear.numberOfSegments);
+
         StdDraw.show();
     }
 }
