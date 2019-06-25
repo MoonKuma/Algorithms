@@ -105,6 +105,6 @@ public class Percolation {
 
     // test client (optional)
     public static void main(String[] args) {
-        ByteBuffer byteBuffer = ByteBuffer.tes();
+
     }
 }
